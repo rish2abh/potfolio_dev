@@ -8,10 +8,16 @@ import { useEffects } from '@/contexts/EffectsContext';
 
 /** Category color mapping */
 const categoryColors: Record<TechNode['category'], { bg: string; border: string; text: string }> = {
+  Languages: { bg: 'rgba(251, 146, 60, 0.1)', border: 'rgba(251, 146, 60, 0.6)', text: '#fb923c' },
+  Frontend: { bg: 'rgba(56, 189, 248, 0.1)', border: 'rgba(56, 189, 248, 0.6)', text: '#38bdf8' },
   Backend: { bg: 'rgba(139, 92, 246, 0.1)', border: 'rgba(139, 92, 246, 0.6)', text: '#8b5cf6' },
+  Architecture: { bg: 'rgba(236, 72, 153, 0.1)', border: 'rgba(236, 72, 153, 0.6)', text: '#ec4899' },
+  'AI/Systems': { bg: 'rgba(234, 179, 8, 0.1)', border: 'rgba(234, 179, 8, 0.6)', text: '#eab308' },
   Database: { bg: 'rgba(34, 197, 94, 0.1)', border: 'rgba(34, 197, 94, 0.6)', text: '#22c55e' },
   Cloud: { bg: 'rgba(0, 212, 255, 0.1)', border: 'rgba(0, 212, 255, 0.6)', text: '#00d4ff' },
-  'AI/Systems': { bg: 'rgba(234, 179, 8, 0.1)', border: 'rgba(234, 179, 8, 0.6)', text: '#eab308' },
+  Security: { bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.6)', text: '#ef4444' },
+  Tools: { bg: 'rgba(168, 162, 158, 0.1)', border: 'rgba(168, 162, 158, 0.6)', text: '#a8a29e' },
+  Concepts: { bg: 'rgba(167, 139, 250, 0.1)', border: 'rgba(167, 139, 250, 0.6)', text: '#a78bfa' },
 };
 
 /** Proficiency badge labels */
@@ -23,10 +29,16 @@ const proficiencyLabels: Record<TechNode['proficiency'], string> = {
 
 /** Category cluster center positions (percentage-based) for force layout */
 const categoryCenters: Record<TechNode['category'], { x: number; y: number }> = {
-  Backend: { x: 25, y: 35 },
-  Database: { x: 75, y: 35 },
-  Cloud: { x: 75, y: 70 },
-  'AI/Systems': { x: 25, y: 70 },
+  Languages: { x: 15, y: 20 },
+  Frontend: { x: 38, y: 20 },
+  Backend: { x: 62, y: 20 },
+  Architecture: { x: 85, y: 20 },
+  'AI/Systems': { x: 15, y: 50 },
+  Database: { x: 38, y: 50 },
+  Cloud: { x: 62, y: 50 },
+  Security: { x: 85, y: 50 },
+  Tools: { x: 30, y: 78 },
+  Concepts: { x: 70, y: 78 },
 };
 
 interface NodePosition {
@@ -51,13 +63,13 @@ function initializePositions(nodes: TechNode[]): Map<string, NodePosition> {
 
     // Spread nodes around their category center
     const angle = (count * 2.4) + Math.random() * 0.5; // golden angle spread
-    const radius = 8 + count * 3;
+    const radius = 5 + count * 2.5;
     const x = center.x + Math.cos(angle) * radius;
     const y = center.y + Math.sin(angle) * radius;
 
     positions.set(node.id, {
-      x: Math.max(8, Math.min(92, x)),
-      y: Math.max(8, Math.min(92, y)),
+      x: Math.max(10, Math.min(90, x)),
+      y: Math.max(10, Math.min(88, y)),
       vx: 0,
       vy: 0,
     });
@@ -98,8 +110,8 @@ function simulateStep(
       const dx = pos.x - otherPos.x;
       const dy = pos.y - otherPos.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 12 && dist > 0) {
-        const force = (12 - dist) / dist * 0.5;
+      if (dist < 8 && dist > 0) {
+        const force = (8 - dist) / dist * 0.5;
         fx += dx * force;
         fy += dy * force;
       }
@@ -120,8 +132,8 @@ function simulateStep(
 
     const vx = (pos.vx + fx) * damping;
     const vy = (pos.vy + fy) * damping;
-    const x = Math.max(8, Math.min(92, pos.x + vx));
-    const y = Math.max(8, Math.min(92, pos.y + vy));
+    const x = Math.max(10, Math.min(90, pos.x + vx));
+    const y = Math.max(10, Math.min(88, pos.y + vy));
 
     newPositions.set(node.id, { x, y, vx, vy });
   });
@@ -265,9 +277,9 @@ function DesktopGraph({
 
         // Size based on proficiency
         const sizeMap: Record<TechNode['proficiency'], number> = {
-          expert: 3.2,
-          proficient: 2.6,
-          familiar: 2.1,
+          expert: 2.4,
+          proficient: 2.0,
+          familiar: 1.6,
         };
         const r = sizeMap[node.proficiency];
 
@@ -317,11 +329,11 @@ function DesktopGraph({
             {/* Node label */}
             <text
               x={`${displayX}%`}
-              y={`${displayY + r + 1.5}%`}
+              y={`${displayY + r + 1.2}%`}
               textAnchor="middle"
-              className="text-[2px] fill-gray-300 pointer-events-none select-none"
+              className="text-[1.6px] fill-gray-300 pointer-events-none select-none"
               style={{
-                fontSize: '2px',
+                fontSize: '1.6px',
                 opacity: isDimmedNode ? 0.3 : 0.9,
                 transition: 'opacity 0.3s ease',
               }}
@@ -339,9 +351,9 @@ function DesktopGraph({
           <text
             key={category}
             x={`${center.x}%`}
-            y={`${center.y - 15}%`}
+            y={`${center.y - 8}%`}
             textAnchor="middle"
-            style={{ fontSize: '2.5px', fill: colors.text, opacity: 0.6 }}
+            style={{ fontSize: '2px', fill: colors.text, opacity: 0.6 }}
             className="pointer-events-none select-none font-semibold"
           >
             {category}
@@ -649,19 +661,21 @@ export default function TechGraph() {
       ) : (
         <div
           ref={containerRef}
-          className="relative w-full aspect-[16/10] rounded-xl border border-white/10 bg-dark-base/50 overflow-visible"
+          className="relative w-full aspect-[16/10] lg:aspect-[16/9] rounded-xl border border-white/10 bg-dark-base/50"
         >
-          <DesktopGraph
-            nodes={techNodes}
-            positions={positions}
-            hoveredNode={hoveredNode}
-            setHoveredNode={setHoveredNode}
-            time={time}
-            reducedMotion={reducedMotion}
-            performanceTier={performanceTier}
-          />
+          <div className="absolute inset-0 overflow-hidden rounded-xl">
+            <DesktopGraph
+              nodes={techNodes}
+              positions={positions}
+              hoveredNode={hoveredNode}
+              setHoveredNode={setHoveredNode}
+              time={time}
+              reducedMotion={reducedMotion}
+              performanceTier={performanceTier}
+            />
+          </div>
 
-          {/* Tooltip overlay */}
+          {/* Tooltip overlay — outside overflow-hidden so it's not clipped */}
           <AnimatePresence>
             {hoveredNodeData && (
               <NodeTooltip

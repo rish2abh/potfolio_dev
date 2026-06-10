@@ -54,7 +54,9 @@ export default function Skills() {
           Tech Network
         </h2>
 
-        <TechGraph />
+        <div className="max-w-5xl mx-auto">
+          <TechGraph />
+        </div>
       </section>
     </SectionWrapper>
   );

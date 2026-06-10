@@ -33,7 +33,7 @@ export interface EngineeringInsight {
 export interface TechNode {
   id: string;
   name: string;
-  category: 'Backend' | 'Database' | 'Cloud' | 'AI/Systems';
+  category: 'Backend' | 'Frontend' | 'Database' | 'Cloud' | 'AI/Systems' | 'Languages' | 'Architecture' | 'Security' | 'Tools' | 'Concepts';
   proficiency: 'expert' | 'proficient' | 'familiar';
   yearsOfExperience: number;
   relatedProjects: string[];

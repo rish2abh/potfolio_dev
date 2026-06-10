@@ -17,8 +17,12 @@ export async function POST(request: Request) {
     return Response.json({ success: true, message: 'Message sent successfully' });
   } catch (error) {
     console.error('Contact API error:', error);
+    const message =
+      error instanceof Error && error.message.includes('RESEND_API_KEY')
+        ? 'Email service is not configured. Please contact the site owner.'
+        : 'Failed to send message. Please try again later.';
     return Response.json(
-      { success: false, message: 'Failed to send message' },
+      { success: false, message },
       { status: 500 }
     );
   }

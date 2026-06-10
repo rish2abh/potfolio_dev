@@ -7,8 +7,9 @@ import { ProjectArchitecture, ArchNode } from '@/types/effects';
 import { fluctuateLatency } from '@/lib/layout-utils';
 import { useEffects } from '@/contexts/EffectsContext';
 import { useLog } from '@/contexts/LogContext';
-import { voiceowlOverviewData, voiceowlFeatures, voiceowlBackendLayers, voiceowlContributions } from '@/data/voiceowlExploreData';
-import { voiceowlArchitecture } from '@/data/architectures';
+import { projectArchitectures } from '@/data/architectures';
+import { getExploreData } from '@/data/projectExploreRegistry';
+import type { ProjectExploreData } from '@/data/projectExploreRegistry';
 
 // ─── Tab Types & Configuration ─────────────────────────────────────────────────
 
@@ -77,7 +78,7 @@ export function TabBar({ tabs, activeTab, onTabChange }: TabBarProps) {
   return (
     <div
       role="tablist"
-      aria-label="VoiceOwl project details"
+      aria-label="Project details"
       className="sticky top-0 z-10 flex gap-1 p-1 bg-white/5 rounded-lg border border-white/10 overflow-x-auto scrollbar-hide"
     >
       {tabs.map((tab, index) => {
@@ -113,6 +114,7 @@ export function TabBar({ tabs, activeTab, onTabChange }: TabBarProps) {
 export interface OverviewPanelProps {
   isActive: boolean;
   heavyAnimationsEnabled: boolean;
+  exploreData: ProjectExploreData;
 }
 
 const containerVariants = {
@@ -125,8 +127,8 @@ const itemVariants = {
   show: { opacity: 1, y: 0 },
 };
 
-function OverviewPanel({ isActive, heavyAnimationsEnabled }: OverviewPanelProps) {
-  const { description, problems, impactStats, systemSummary } = voiceowlOverviewData;
+function OverviewPanel({ isActive, heavyAnimationsEnabled, exploreData }: OverviewPanelProps) {
+  const { description, problems, impactStats, systemSummary } = exploreData.overview;
 
   // Animated counters — when heavyAnimationsEnabled is false, show final values instantly
   const shouldAnimate = isActive && heavyAnimationsEnabled;
@@ -204,6 +206,7 @@ function OverviewPanel({ isActive, heavyAnimationsEnabled }: OverviewPanelProps)
 export interface ArchitecturePanelProps {
   architecture: ProjectArchitecture;
   heavyAnimationsEnabled: boolean;
+  exploreData: ProjectExploreData;
 }
 
 // Color map for node types
@@ -215,7 +218,7 @@ const NODE_COLOR_MAP: Record<ArchNode['type'], string> = {
   external: '#6b7280',
 };
 
-function ArchitecturePanel({ architecture, heavyAnimationsEnabled }: ArchitecturePanelProps) {
+function ArchitecturePanel({ architecture, heavyAnimationsEnabled, exploreData }: ArchitecturePanelProps) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
@@ -501,7 +504,7 @@ function ArchitecturePanel({ architecture, heavyAnimationsEnabled }: Architectur
       >
         <h4 className="text-white/70 text-xs uppercase tracking-wider font-mono">Backend Architecture Layers</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {voiceowlBackendLayers.map((layer) => (
+          {exploreData.backendLayers.map((layer) => (
             <motion.div
               key={layer.name}
               variants={itemVariants}
@@ -610,7 +613,7 @@ function EngineeringInsightsSection({ insights }: EngineeringInsightsSectionProp
   );
 }
 
-function FeaturesPanel() {
+function FeaturesPanel({ exploreData }: { exploreData: ProjectExploreData }) {
   return (
     <motion.div
       className="space-y-4"
@@ -619,7 +622,7 @@ function FeaturesPanel() {
       animate="show"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {voiceowlFeatures.map((category) => (
+        {exploreData.features.map((category) => (
           <motion.div
             key={category.title}
             className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4"
@@ -660,6 +663,7 @@ function FeaturesPanel() {
 export interface ContributionsPanelProps {
   isActive: boolean;
   heavyAnimationsEnabled: boolean;
+  exploreData: ProjectExploreData;
 }
 
 const contributionsContainerVariants = {
@@ -667,8 +671,8 @@ const contributionsContainerVariants = {
   show: { transition: { staggerChildren: 0.06 } },
 };
 
-function ContributionsPanel({ isActive, heavyAnimationsEnabled }: ContributionsPanelProps) {
-  const { items, challenges, impactMetrics, techStack } = voiceowlContributions;
+function ContributionsPanel({ isActive, heavyAnimationsEnabled, exploreData }: ContributionsPanelProps) {
+  const { items, challenges, impactMetrics, techStack } = exploreData.contributions;
 
   // Animated counters for impact metrics
   const shouldAnimate = isActive && heavyAnimationsEnabled;
@@ -951,8 +955,9 @@ export default function ProjectSystemView({
     [handleTabChange]
   );
 
-  // VoiceOwl-only tab activation
-  const isVoiceOwl = project.id === 'voiceowl-ai';
+  // Check if this project has full explore data
+  const exploreData = getExploreData(project.id);
+  const hasFullExplore = !!exploreData;
 
   // Performance-aware animation control
   const heavyAnimationsEnabled = performanceTier === 'high' && effectsEnabled && !reducedMotion;
@@ -1091,9 +1096,9 @@ export default function ProjectSystemView({
             </div>
           </section>
 
-          {isVoiceOwl ? (
-            /* VoiceOwl: TabBar + lazy-loaded tab panels */
-            <section className="p-6 md:p-8 space-y-4" aria-label="VoiceOwl project details">
+          {hasFullExplore && exploreData ? (
+            /* Full tabbed explore system for projects with explore data */
+            <section className="p-6 md:p-8 space-y-4" aria-label={`${project.name} project details`}>
               <TabBar tabs={TABS} activeTab={activeTab} onTabChange={onTabChange} />
 
               {/* Tab panel area */}
@@ -1114,13 +1119,13 @@ export default function ProjectSystemView({
                     (() => {
                       switch (activeTab) {
                         case 'overview':
-                          return <OverviewPanel isActive={activeTab === 'overview'} heavyAnimationsEnabled={heavyAnimationsEnabled} />;
+                          return <OverviewPanel isActive={activeTab === 'overview'} heavyAnimationsEnabled={heavyAnimationsEnabled} exploreData={exploreData} />;
                         case 'architecture':
-                          return <ArchitecturePanel architecture={voiceowlArchitecture} heavyAnimationsEnabled={heavyAnimationsEnabled} />;
+                          return <ArchitecturePanel architecture={projectArchitectures[project.id]} heavyAnimationsEnabled={heavyAnimationsEnabled} exploreData={exploreData} />;
                         case 'features':
-                          return <FeaturesPanel />;
+                          return <FeaturesPanel exploreData={exploreData} />;
                         case 'contributions':
-                          return <ContributionsPanel isActive={activeTab === 'contributions'} heavyAnimationsEnabled={heavyAnimationsEnabled} />;
+                          return <ContributionsPanel isActive={activeTab === 'contributions'} heavyAnimationsEnabled={heavyAnimationsEnabled} exploreData={exploreData} />;
                       }
                     })()
                   )}

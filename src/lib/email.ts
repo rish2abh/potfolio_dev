@@ -6,11 +6,19 @@ import { ContactFormData } from '@/types';
  * Reads API key from RESEND_API_KEY environment variable.
  */
 export async function sendEmail(data: ContactFormData): Promise<void> {
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey || apiKey === 'your_resend_api_key_here') {
+    throw new Error(
+      'RESEND_API_KEY is not configured. Add it to your .env.local file.'
+    );
+  }
+
+  const resend = new Resend(apiKey);
   const recipientEmail = process.env.CONTACT_RECIPIENT_EMAIL || 'delivered@resend.dev';
   const { name, email, message } = data;
 
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: 'Portfolio Contact <onboarding@resend.dev>',
     to: recipientEmail,
     subject: `Portfolio Contact: ${name}`,
@@ -28,6 +36,10 @@ export async function sendEmail(data: ContactFormData): Promise<void> {
       </div>
     `,
   });
+
+  if (error) {
+    throw new Error(`Resend API error: ${error.message}`);
+  }
 }
 
 /**

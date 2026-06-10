@@ -31,12 +31,16 @@ export default function Button({
   const combinedClassName = `${baseStyles} ${variants[variant]} ${className}`;
 
   if (href) {
+    const isExternal = href.startsWith('http');
+    const isDownload = href.endsWith('.pdf') || href.includes('download');
+
     return (
       <a
         href={href}
         className={combinedClassName}
-        target={href.startsWith('http') ? '_blank' : undefined}
-        rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
+        download={isDownload && !isExternal ? '' : undefined}
       >
         {children}
       </a>
