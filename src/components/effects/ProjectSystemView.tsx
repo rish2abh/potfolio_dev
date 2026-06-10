@@ -7,7 +7,7 @@ import { ProjectArchitecture, ArchNode } from '@/types/effects';
 import { fluctuateLatency } from '@/lib/layout-utils';
 import { useEffects } from '@/contexts/EffectsContext';
 import { useLog } from '@/contexts/LogContext';
-import { voiceowlOverviewData } from '@/data/voiceowlExploreData';
+import { voiceowlOverviewData, voiceowlFeatures, voiceowlBackendLayers, voiceowlContributions } from '@/data/voiceowlExploreData';
 import { voiceowlArchitecture } from '@/data/architectures';
 
 // ─── Tab Types & Configuration ─────────────────────────────────────────────────
@@ -269,6 +269,16 @@ function ArchitecturePanel({ architecture, heavyAnimationsEnabled }: Architectur
           role="img"
           aria-label="System architecture node graph"
         >
+          {/* CSS keyframes for animated edge data flow */}
+          <style>
+            {`
+              @keyframes dashFlow {
+                from { stroke-dashoffset: 20; }
+                to { stroke-dashoffset: 0; }
+              }
+            `}
+          </style>
+
           {/* SVG Filters for glow effects */}
           <defs>
             {Object.entries(NODE_COLOR_MAP).map(([type, color]) => (
@@ -296,7 +306,7 @@ function ArchitecturePanel({ architecture, heavyAnimationsEnabled }: Architectur
             ))}
           </defs>
 
-          {/* Render Edges */}
+          {/* Render Edges as animated paths */}
           {edges.map((edge) => {
             const fromNode = nodes.find((n) => n.id === edge.from);
             const toNode = nodes.find((n) => n.id === edge.to);
@@ -308,17 +318,22 @@ function ArchitecturePanel({ architecture, heavyAnimationsEnabled }: Architectur
             const y2 = toNode.position.y + nodeHeight / 2;
             const midX = (x1 + x2) / 2;
             const midY = (y1 + y2) / 2;
+            const pathD = `M ${x1},${y1} L ${x2},${y2}`;
 
             return (
               <g key={`${edge.from}-${edge.to}`}>
-                <line
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
+                <path
+                  d={pathD}
                   stroke="rgba(255,255,255,0.15)"
                   strokeWidth="0.3"
                   strokeLinecap="round"
+                  fill="none"
+                  strokeDasharray={heavyAnimationsEnabled ? '4 2' : undefined}
+                  style={
+                    heavyAnimationsEnabled
+                      ? { animation: 'dashFlow 1.5s linear infinite' }
+                      : undefined
+                  }
                 />
                 {edge.label && (
                   <text
@@ -476,23 +491,307 @@ function ArchitecturePanel({ architecture, heavyAnimationsEnabled }: Architectur
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Backend Architecture Layers Section */}
+      <motion.div
+        className="space-y-3"
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+      >
+        <h4 className="text-white/70 text-xs uppercase tracking-wider font-mono">Backend Architecture Layers</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {voiceowlBackendLayers.map((layer) => (
+            <motion.div
+              key={layer.name}
+              variants={itemVariants}
+              className="bg-white/5 border border-white/10 rounded-xl p-4"
+            >
+              <h5 className="text-white font-semibold text-sm mb-1">{layer.name}</h5>
+              <p className="text-white/60 text-xs leading-relaxed">{layer.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Engineering Insights Section */}
+      <EngineeringInsightsSection insights={architecture.insights} />
     </div>
+  );
+}
+
+// ─── Engineering Insights Section (collapsible cards) ───────────────────────────
+
+interface EngineeringInsightsSectionProps {
+  insights: ProjectArchitecture['insights'];
+}
+
+function EngineeringInsightsSection({ insights }: EngineeringInsightsSectionProps) {
+  const [expandedInsights, setExpandedInsights] = useState<Set<number>>(new Set());
+
+  const toggleInsight = (index: number) => {
+    setExpandedInsights((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
+  return (
+    <motion.div
+      className="space-y-3"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <h4 className="text-white/70 text-xs uppercase tracking-wider font-mono">Engineering Insights</h4>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {insights.map((insight, index) => {
+          const isExpanded = expandedInsights.has(index);
+          return (
+            <motion.div
+              key={insight.question}
+              variants={itemVariants}
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 cursor-pointer transition-colors hover:border-white/20"
+              onClick={() => toggleInsight(index)}
+              role="button"
+              aria-expanded={isExpanded}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleInsight(index);
+                }
+              }}
+            >
+              {/* Always visible: question + decision */}
+              <div className="flex items-start justify-between gap-2">
+                <h5 className="text-white/90 font-medium text-sm">{insight.question}</h5>
+                <span
+                  className={`text-white/40 text-xs flex-shrink-0 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                >
+                  ▼
+                </span>
+              </div>
+              <p className="text-white/70 text-xs leading-relaxed mt-2">{insight.decision}</p>
+
+              {/* Expanded: tradeoff + outcome */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+                      <p className="text-amber-400/80 text-xs leading-relaxed">
+                        <span className="font-semibold text-amber-400/90">Tradeoff: </span>
+                        {insight.tradeoff}
+                      </p>
+                      <p className="text-green-400/80 text-xs leading-relaxed">
+                        <span className="font-semibold text-green-400/90">Outcome: </span>
+                        {insight.outcome}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
   );
 }
 
 function FeaturesPanel() {
   return (
-    <div className="min-h-[200px] p-4 bg-white/5 border border-white/10 rounded-xl">
-      <p className="text-white/60 text-sm font-mono">Features panel — content coming soon</p>
-    </div>
+    <motion.div
+      className="space-y-4"
+      variants={{ show: { transition: { staggerChildren: 0.08 } } }}
+      initial="hidden"
+      animate="show"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {voiceowlFeatures.map((category) => (
+          <motion.div
+            key={category.title}
+            className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4"
+            variants={itemVariants}
+          >
+            <h4 className="text-white font-semibold text-sm mb-3">{category.title}</h4>
+            <ul className="space-y-2">
+              {category.items.map((item) => (
+                <li key={item.name} className="flex items-start gap-2">
+                  {/* Live status indicator */}
+                  {item.liveStatus ? (
+                    <span className="flex-shrink-0 mt-1 relative">
+                      <span className="block w-2 h-2 bg-green-400 rounded-full" />
+                      <span className="absolute inset-0 w-2 h-2 bg-green-400 rounded-full animate-ping opacity-75" />
+                    </span>
+                  ) : (
+                    <span className="flex-shrink-0 mt-1 block w-2 h-2 bg-gray-500 rounded-full" />
+                  )}
+                  <div className="flex-1">
+                    <span className="text-white/80 text-xs">{item.name}</span>
+                    {item.liveStatus && (
+                      <span className="ml-2 text-[10px] text-green-400 font-mono uppercase">ACTIVE</span>
+                    )}
+                    {item.metric && (
+                      <span className="block text-white/40 text-[10px] font-mono mt-0.5">{item.metric}</span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
 
-function ContributionsPanel() {
+export interface ContributionsPanelProps {
+  isActive: boolean;
+  heavyAnimationsEnabled: boolean;
+}
+
+const contributionsContainerVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06 } },
+};
+
+function ContributionsPanel({ isActive, heavyAnimationsEnabled }: ContributionsPanelProps) {
+  const { items, challenges, impactMetrics, techStack } = voiceowlContributions;
+
+  // Animated counters for impact metrics
+  const shouldAnimate = isActive && heavyAnimationsEnabled;
+  const counter0 = useAnimatedCounter(impactMetrics[0].value, 2000, shouldAnimate);
+  const counter1 = useAnimatedCounter(impactMetrics[1].value, 2000, shouldAnimate);
+  const counter2 = useAnimatedCounter(impactMetrics[2].value, 2000, shouldAnimate);
+  const counter3 = useAnimatedCounter(impactMetrics[3].value, 2000, shouldAnimate);
+  const counterValues = [counter0, counter1, counter2, counter3];
+
   return (
-    <div className="min-h-[200px] p-4 bg-white/5 border border-white/10 rounded-xl">
-      <p className="text-white/60 text-sm font-mono">Contributions panel — content coming soon</p>
-    </div>
+    <motion.div
+      className="space-y-8"
+      variants={contributionsContainerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      {/* Contributions Section */}
+      <motion.div className="space-y-3" variants={contributionsContainerVariants}>
+        <h4 className="text-white/70 text-xs uppercase tracking-wider font-mono">Key Contributions</h4>
+        <div className="space-y-4">
+          {items.map((item) => (
+            <motion.div
+              key={item.title}
+              className="space-y-2"
+              variants={itemVariants}
+            >
+              <h5 className="text-white font-semibold text-sm">{item.title}</h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Before */}
+                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                  <span className="text-red-400/80 text-[10px] uppercase font-mono">Before</span>
+                  <p className="text-white/60 text-xs mt-1">{item.before}</p>
+                </div>
+                {/* Arrow separator (visible on md+ between the two cards) */}
+                <div className="hidden md:flex absolute inset-y-0 left-1/2 -translate-x-1/2 items-center pointer-events-none" aria-hidden="true">
+                </div>
+                {/* After */}
+                <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                  <span className="text-green-400/80 text-[10px] uppercase font-mono">After</span>
+                  <p className="text-white/90 text-xs mt-1">{item.after}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Challenges Section */}
+      <motion.div className="space-y-3" variants={contributionsContainerVariants}>
+        <h4 className="text-white/70 text-xs uppercase tracking-wider font-mono">Technical Challenges</h4>
+        <div className="space-y-4">
+          {challenges.map((challenge) => (
+            <motion.div
+              key={challenge.title}
+              className="space-y-2"
+              variants={itemVariants}
+            >
+              <h5 className="text-white font-semibold text-sm">{challenge.title}</h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Before */}
+                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                  <span className="text-red-400/80 text-[10px] uppercase font-mono">Before</span>
+                  <p className="text-white/60 text-xs mt-1">{challenge.before}</p>
+                </div>
+                {/* After */}
+                <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                  <span className="text-green-400/80 text-[10px] uppercase font-mono">After</span>
+                  <p className="text-white/90 text-xs mt-1">{challenge.after}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Impact Metrics Section */}
+      <motion.div className="space-y-3" variants={contributionsContainerVariants}>
+        <h4 className="text-white/70 text-xs uppercase tracking-wider font-mono">Impact Metrics</h4>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {impactMetrics.map((metric, index) => (
+            <motion.div
+              key={metric.label}
+              className="p-4 bg-white/5 border border-white/10 rounded-xl text-center"
+              variants={itemVariants}
+            >
+              <p className="text-2xl font-bold text-white tabular-nums">
+                {heavyAnimationsEnabled ? counterValues[index] : metric.value}
+                <span className="text-sm text-white/60">{metric.suffix}</span>
+              </p>
+              <p className="text-white/60 text-[10px] mt-1.5 uppercase tracking-wider font-mono">
+                {metric.label}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Tech Stack Section */}
+      <motion.div className="space-y-3" variants={contributionsContainerVariants}>
+        <h4 className="text-white/70 text-xs uppercase tracking-wider font-mono">Tech Stack</h4>
+        <div className="space-y-4">
+          {techStack.map((group) => (
+            <motion.div
+              key={group.category}
+              className="space-y-2"
+              variants={itemVariants}
+            >
+              <h5 className="text-white/80 text-xs font-semibold">{group.category}</h5>
+              <div className="flex flex-wrap gap-2">
+                {group.technologies.map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-2 py-1 text-[10px] font-mono bg-white/5 border border-white/10 rounded text-white/70"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -513,9 +812,10 @@ export function LoadingShimmer() {
  * Hook that manages system log integration and micro-delay realism on tab change.
  * - Logs tab change to system log via LogContext
  * - Manages `contentReady` state with a ~150ms artificial delay
+ * - When `skipDelay` is true (e.g. reducedMotion), skips the delay entirely and shows content instantly
  * - Returns `contentReady` boolean and a `handleTabChange` callback
  */
-export function useTabChangeHandler(tabs: TabConfig[]) {
+export function useTabChangeHandler(tabs: TabConfig[], skipDelay: boolean = false) {
   const { addEntry } = useLog();
   const [contentReady, setContentReady] = useState(true);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -527,6 +827,11 @@ export function useTabChangeHandler(tabs: TabConfig[]) {
 
       // Log the tab change to system log
       addEntry('AI', `[AI] Switching to ${tabLabel} view...`);
+
+      // When reducedMotion/skipDelay is active, skip the micro-delay entirely
+      if (skipDelay) {
+        return;
+      }
 
       // Start micro-delay: content not ready
       setContentReady(false);
@@ -542,7 +847,7 @@ export function useTabChangeHandler(tabs: TabConfig[]) {
         timerRef.current = null;
       }, 150);
     },
-    [addEntry, tabs]
+    [addEntry, tabs, skipDelay]
   );
 
   // Cleanup timer on unmount
@@ -635,7 +940,7 @@ export default function ProjectSystemView({
 
   // Tab state management
   const [activeTab, setActiveTab] = useState<TabId>('overview');
-  const { contentReady, handleTabChange } = useTabChangeHandler(TABS);
+  const { contentReady, handleTabChange } = useTabChangeHandler(TABS, reducedMotion);
 
   // Combined tab change handler: updates state + fires log/delay
   const onTabChange = useCallback(
@@ -815,7 +1120,7 @@ export default function ProjectSystemView({
                         case 'features':
                           return <FeaturesPanel />;
                         case 'contributions':
-                          return <ContributionsPanel />;
+                          return <ContributionsPanel isActive={activeTab === 'contributions'} heavyAnimationsEnabled={heavyAnimationsEnabled} />;
                       }
                     })()
                   )}

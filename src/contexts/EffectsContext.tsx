@@ -168,19 +168,23 @@ export function useEffects() {
 }
 
 export function EffectsProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<EffectsState>(() => {
-    // Check sessionStorage for persisted state (client-only)
-    if (typeof window === 'undefined') return defaultState;
+  // Always start with defaultState to avoid hydration mismatch.
+  // SessionStorage values are restored in a useEffect below.
+  const [state, setState] = useState<EffectsState>(defaultState);
 
+  // Hydrate persisted state from sessionStorage after mount (client-only)
+  useEffect(() => {
     const quickView = sessionStorage.getItem('quick_view') === 'true';
     const bootDone = sessionStorage.getItem('boot_completed') === 'true';
 
-    return {
-      ...defaultState,
-      quickViewMode: quickView,
-      bootCompleted: bootDone,
-    };
-  });
+    if (quickView || bootDone) {
+      setState((s) => ({
+        ...s,
+        quickViewMode: quickView,
+        bootCompleted: bootDone,
+      }));
+    }
+  }, []);
 
   const [moduleCount, setModuleCount] = useState(1);
   const visitedSectionsRef = useRef<Set<string>>(new Set(['hero']));
