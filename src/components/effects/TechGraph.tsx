@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { techNodes } from '@/data/techGraph';
 import { TechNode } from '@/types/effects';
@@ -247,7 +247,6 @@ function DesktopGraph({
         const pos = positions.get(node.id);
         if (!pos) return null;
 
-        const isHighlightedNode = highlighted.has(node.id);
         const isDimmedNode = dimmed.has(node.id);
         const colors = categoryColors[node.category];
 
@@ -367,9 +366,6 @@ function NodeTooltip({
   if (!pos || !containerRef.current) return null;
 
   const colors = categoryColors[node.category];
-  const rect = containerRef.current.getBoundingClientRect();
-  const left = (pos.x / 100) * rect.width;
-  const top = (pos.y / 100) * rect.height;
 
   return (
     <motion.div

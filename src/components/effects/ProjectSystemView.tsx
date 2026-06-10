@@ -911,7 +911,7 @@ function useAnimatedCounter(target: number, duration: number, active: boolean): 
 }
 
 /** Architecture flow node */
-function FlowNode({ label, isFirst, isLast }: { label: string; isFirst?: boolean; isLast?: boolean }) {
+function FlowNode({ label, isFirst }: { label: string; isFirst?: boolean; isLast?: boolean }) {
   return (
     <div className="flex items-center">
       {!isFirst && (
@@ -936,7 +936,7 @@ export default function ProjectSystemView({
 }: ProjectSystemViewProps) {
   const { setOverlayActive, performanceTier, reducedMotion, effectsEnabled } = useEffects();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen] = useState(true);
 
   // Tab state management
   const [activeTab, setActiveTab] = useState<TabId>('overview');

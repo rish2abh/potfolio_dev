@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import ProjectSystemView from './ProjectSystemView';
 import { Project } from '@/types';
 
@@ -26,12 +26,12 @@ vi.mock('@/contexts/LogContext', () => ({
 // Mock framer-motion to simplify testing
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
-      const { initial, animate, exit, transition, variants, ...domProps } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    div: ({ children, initial, animate, exit, transition, variants, ...domProps }: React.PropsWithChildren<Record<string, unknown>>) => {
       return <div {...domProps}>{children}</div>;
     },
-    p: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
-      const { initial, animate, exit, transition, variants, ...domProps } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    p: ({ children, initial, animate, exit, transition, variants, ...domProps }: React.PropsWithChildren<Record<string, unknown>>) => {
       return <p {...domProps}>{children}</p>;
     },
   },

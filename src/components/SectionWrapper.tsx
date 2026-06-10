@@ -24,6 +24,7 @@ const childVariants: Variants = {
 
 export default function SectionWrapper({
   children,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   variant = 'fade-up',
   className = '',
   sectionId,
