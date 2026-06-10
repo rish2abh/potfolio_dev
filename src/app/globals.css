@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #020617;
+  --foreground: #ededed;
+  --neon-blue: #00d4ff;
+  --purple: #8b5cf6;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+
+  code,
+  pre {
+    font-family: var(--font-jetbrains-mono), monospace;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ===== Keyframe Animations ===== */
+
+@keyframes rotateBorderPseudo {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes rotateRing {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+@keyframes auroraFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 15px) scale(0.95);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/* ===== Animation Utility Classes ===== */
+
+.animate-fadeIn {
+  animation: fadeIn 500ms ease-out forwards;
+}
+
+.animate-pulseGlow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-rotateRing {
+  animation: rotateRing 20s linear infinite;
+}
+
+.animate-statusPulse {
+  animation: statusPulse 1.5s ease-in-out infinite;
+}
+
+.animate-auroraFloat {
+  animation: auroraFloat 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ===== Glow Utility Classes ===== */
+
+.glow-neon-idle {
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+}
+
+.glow-neon-hover {
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.6),
+    0 0 50px rgba(139, 92, 246, 0.3);
+}
+
+.glow-voiceowl-hover {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
+}
+
+.glow-viz-core {
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.25),
+    0 0 80px rgba(139, 92, 246, 0.1);
+}
+
+/* ===== Focal Glow CSS ===== */
+
+[data-focal-container] [data-section] {
+  transition: opacity 400ms ease;
+}
+
+[data-focal-container] [data-section]:not([data-focal='true']) {
+  opacity: 0.85;
+}
+
+[data-focal-container] [data-section][data-focal='true'] {
+  opacity: 1;
+}
+
+[data-focal-container][data-perf='high']
+  [data-section]:not([data-focal='true']) {
+  filter: blur(0.3px);
+}
+
+/* ===== VoiceOwl Animated Border CSS ===== */
+
+.voiceowl-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+
+.voiceowl-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    var(--neon-blue),
+    var(--purple),
+    var(--neon-blue)
+  );
+  animation: rotateBorderPseudo 3s linear infinite;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.voiceowl-card:hover::before {
+  opacity: 1;
+}
+
+.voiceowl-card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: #020617;
+}

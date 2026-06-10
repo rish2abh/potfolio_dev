@@ -1,0 +1,40 @@
+import { Project } from '@/types';
+
+export const projects: Project[] = [
+  {
+    id: 'voiceowl-ai',
+    name: 'VoiceOwl AI',
+    description: 'Enterprise AI calling and automation platform',
+    problem: 'Manual outbound calling at scale is costly and inconsistent, leading to poor customer engagement and high operational overhead',
+    solution: 'AI-driven calling system with real-time SSE dashboards and automation workflows that handle thousands of concurrent calls',
+    techStack: ['Node.js', 'NestJS', 'MongoDB', 'Server-Sent Events', 'OpenAI', 'Deepgram', 'ElevenLabs'],
+    contribution: 'Designed and built the real-time backend architecture and SSE dashboard system',
+    impact: '150,000+ daily active users, 2M+ daily API requests with 99.9% uptime',
+    githubUrl: 'https://github.com/rish2abh',
+    featured: true,
+  },
+  {
+    id: 'agrisoft',
+    name: 'AgriSoft',
+    description: 'Automation and Data Processing Platform',
+    problem: 'Agricultural data management was fragmented and manual, causing delays in decision-making and reporting',
+    solution: 'Centralized automation platform that processes and organizes agricultural data with real-time analytics and reporting',
+    techStack: ['Node.js', 'Express', 'MongoDB', 'AWS S3'],
+    contribution: 'Built the data processing pipeline and automation workflows for agricultural data management',
+    impact: '200K+ monthly records processed with 40% reduction in manual tasks',
+    githubUrl: 'https://github.com/rish2abh',
+    featured: false,
+  },
+  {
+    id: 'digisparsh',
+    name: 'Digisparsh',
+    description: 'HealthTech Workflow and Billing Platform',
+    problem: 'Healthcare providers struggled with disconnected billing systems and manual workflow processes causing billing errors',
+    solution: 'Integrated workflow and billing platform that streamlines healthcare operations with automated billing and patient management',
+    techStack: ['Node.js', 'Express', 'MongoDB', 'Cloudinary'],
+    contribution: 'Developed the billing engine and workflow automation modules for healthcare providers',
+    impact: 'Streamlined operations for healthcare providers, reducing billing errors and processing time',
+    githubUrl: 'https://github.com/rish2abh',
+    featured: false,
+  },
+];
