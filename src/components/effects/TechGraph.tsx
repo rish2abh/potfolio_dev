@@ -16,6 +16,7 @@ const categoryColors: Record<TechNode['category'], { bg: string; border: string;
   Database: { bg: 'rgba(34, 197, 94, 0.1)', border: 'rgba(34, 197, 94, 0.6)', text: '#22c55e' },
   Cloud: { bg: 'rgba(0, 212, 255, 0.1)', border: 'rgba(0, 212, 255, 0.6)', text: '#00d4ff' },
   Security: { bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.6)', text: '#ef4444' },
+  Payments: { bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.6)', text: '#10b981' },
   Tools: { bg: 'rgba(168, 162, 158, 0.1)', border: 'rgba(168, 162, 158, 0.6)', text: '#a8a29e' },
   Concepts: { bg: 'rgba(167, 139, 250, 0.1)', border: 'rgba(167, 139, 250, 0.6)', text: '#a78bfa' },
 };
@@ -29,16 +30,17 @@ const proficiencyLabels: Record<TechNode['proficiency'], string> = {
 
 /** Category cluster center positions (percentage-based) for force layout */
 const categoryCenters: Record<TechNode['category'], { x: number; y: number }> = {
-  Languages: { x: 15, y: 20 },
-  Frontend: { x: 38, y: 20 },
-  Backend: { x: 62, y: 20 },
-  Architecture: { x: 85, y: 20 },
-  'AI/Systems': { x: 15, y: 50 },
-  Database: { x: 38, y: 50 },
-  Cloud: { x: 62, y: 50 },
-  Security: { x: 85, y: 50 },
-  Tools: { x: 30, y: 78 },
-  Concepts: { x: 70, y: 78 },
+  Languages: { x: 13, y: 18 },
+  Frontend: { x: 37, y: 18 },
+  Backend: { x: 63, y: 18 },
+  Architecture: { x: 87, y: 18 },
+  'AI/Systems': { x: 13, y: 48 },
+  Database: { x: 37, y: 48 },
+  Cloud: { x: 63, y: 48 },
+  Security: { x: 87, y: 48 },
+  Payments: { x: 25, y: 78 },
+  Tools: { x: 50, y: 78 },
+  Concepts: { x: 75, y: 78 },
 };
 
 interface NodePosition {

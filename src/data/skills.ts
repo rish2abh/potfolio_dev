@@ -45,6 +45,10 @@ export const skills: Skill[] = [
   { name: 'MFA', category: 'Security' },
   { name: 'RBAC', category: 'Security' },
 
+  // Payments
+  { name: 'Razorpay', category: 'Payments' },
+  { name: 'Stripe', category: 'Payments' },
+
   // Tools & Testing
   { name: 'Postman', category: 'Tools' },
   { name: 'Swagger', category: 'Tools' },

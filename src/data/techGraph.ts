@@ -164,6 +164,26 @@ export const techNodes: TechNode[] = [
     connections: ['twilio', 'nodejs'],
   },
 
+  // ─── Payments ────────────────────────────────────────────────────────────────
+  {
+    id: 'razorpay',
+    name: 'Razorpay',
+    category: 'Payments',
+    proficiency: 'proficient',
+    yearsOfExperience: 2,
+    relatedProjects: ['VoiceOwl AI'],
+    connections: ['stripe', 'nodejs', 'rest-apis'],
+  },
+  {
+    id: 'stripe',
+    name: 'Stripe',
+    category: 'Payments',
+    proficiency: 'proficient',
+    yearsOfExperience: 2,
+    relatedProjects: ['VoiceOwl AI'],
+    connections: ['razorpay', 'nodejs', 'rest-apis'],
+  },
+
   // ─── Databases ──────────────────────────────────────────────────────────────
   {
     id: 'mongodb',

@@ -35,7 +35,7 @@ export interface Experience {
 
 export interface Skill {
   name: string;
-  category: 'Backend' | 'Frontend' | 'Database' | 'Cloud' | 'AI/Systems' | 'Languages' | 'Architecture' | 'Security' | 'Tools' | 'Concepts';
+  category: 'Backend' | 'Frontend' | 'Database' | 'Cloud' | 'AI/Systems' | 'Languages' | 'Architecture' | 'Security' | 'Tools' | 'Concepts' | 'Payments';
 }
 
 export interface Certification {

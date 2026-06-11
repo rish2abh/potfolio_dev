@@ -43,7 +43,8 @@ export default function SectionWrapper({
     [childCount]
   );
 
-  // IntersectionObserver: trigger at 30% visibility, once only
+  // IntersectionObserver: trigger at 5% visibility, once only
+  // Uses low threshold so tall sections (like Projects) trigger reliably on all screens
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -63,12 +64,24 @@ export default function SectionWrapper({
           observer.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.05, rootMargin: '0px 0px -50px 0px' }
     );
 
     observer.observe(el);
 
-    return () => observer.disconnect();
+    // Safety fallback: if section never becomes visible within 5s, show it anyway
+    const fallbackTimer = setTimeout(() => {
+      if (!hasFiredRef.current) {
+        hasFiredRef.current = true;
+        setIsTriggered(true);
+        observer.disconnect();
+      }
+    }, 5000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(fallbackTimer);
+    };
   }, [prefersReducedMotion]);
 
   // Fire log entry on section visibility

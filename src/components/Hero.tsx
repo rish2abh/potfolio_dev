@@ -23,12 +23,34 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-[-0.03em] text-white mb-4">
-            {personalInfo.name}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-[-0.03em] text-white mb-2 leading-[1.1]">
+            Rishabh Shrivastava
           </h1>
-          <p className="text-xl text-white/65 max-w-lg mb-8 mx-auto md:mx-0">
-            I build real-time AI backend systems and scalable architectures.
+          <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-[-0.02em] text-white/80 mb-4 leading-[1.2]">
+            I architect backends that{' '}
+            <span className="bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+              don&apos;t break at scale.
+            </span>
+          </h3>
+          <p className="text-lg md:text-xl text-white/60 max-w-lg mb-6 mx-auto md:mx-0">
+            3+ years building real-time AI systems, high-throughput APIs, and infrastructure that handles millions of requests without flinching.
           </p>
+
+          {/* Impact highlights */}
+          <ul className="space-y-2 mb-8 text-sm md:text-base text-white/75 max-w-lg mx-auto md:mx-0">
+            <li className="flex items-start gap-2">
+              <span className="text-neon-blue mt-0.5">▸</span>
+              Engineered a voice AI platform serving 150K+ daily users with sub-200ms latency
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-neon-blue mt-0.5">▸</span>
+              Built real-time SSE dashboards handling 2M+ daily API requests at 99.9% uptime
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-neon-blue mt-0.5">▸</span>
+              Decomposed monoliths into microservices — cutting deploy time from 15 min to 90s
+            </li>
+          </ul>
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-8">

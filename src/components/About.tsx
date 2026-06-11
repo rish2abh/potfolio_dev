@@ -49,6 +49,45 @@ export default function About() {
             infrastructure that teams can depend on.
           </p>
         </div>
+
+        {/* What I Bring */}
+        <div className="mt-14">
+          <h3 className="text-xl md:text-2xl font-bold text-white mb-6">
+            What I Bring
+          </h3>
+          <ul className="space-y-4">
+            <li className="flex items-start gap-3">
+              <span className="text-neon-blue text-lg mt-0.5 flex-shrink-0">⚡</span>
+              <p className="text-gray-300">
+                <span className="text-white font-semibold">Real-time system design</span> — I build SSE and WebSocket architectures that push live data to 150K+ connected users without polling overhead or stale state.
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-neon-purple text-lg mt-0.5 flex-shrink-0">🧠</span>
+              <p className="text-gray-300">
+                <span className="text-white font-semibold">AI pipeline engineering</span> — I integrate LLMs, speech-to-text, and voice synthesis into production backends with fallback chains, retry logic, and sub-200ms latency budgets.
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-neon-blue text-lg mt-0.5 flex-shrink-0">🏗️</span>
+              <p className="text-gray-300">
+                <span className="text-white font-semibold">Monolith-to-microservices migration</span> — I decompose coupled codebases into independently deployable services, cutting deploy cycles from 15 minutes to 90 seconds with zero-downtime releases.
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-neon-purple text-lg mt-0.5 flex-shrink-0">📈</span>
+              <p className="text-gray-300">
+                <span className="text-white font-semibold">Scale-first API design</span> — I architect APIs that handle 2M+ daily requests with proper rate limiting, caching layers, and query optimization that keeps p99 latency under 50ms.
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-neon-blue text-lg mt-0.5 flex-shrink-0">🛡️</span>
+              <p className="text-gray-300">
+                <span className="text-white font-semibold">Production-grade reliability</span> — I ship with graceful shutdown, circuit breakers, structured logging with request tracing, and automated test suites that catch regressions before they hit users.
+              </p>
+            </li>
+          </ul>
+        </div>
       </section>
     </SectionWrapper>
   );
