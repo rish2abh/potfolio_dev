@@ -44,6 +44,7 @@ export interface Certification {
   issuer: string;
   date: string;
   verificationUrl?: string;
+  logo?: string;
 }
 
 export interface ContactFormData {

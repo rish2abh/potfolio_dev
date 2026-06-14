@@ -102,3 +102,19 @@ export const personalProjects: Project[] = [
     featured: false,
   },
 ];
+
+/** Plugins / Browser Extensions */
+export const pluginProjects: Project[] = [
+  {
+    id: 'smart-job-autofill',
+    name: 'Smart Job Autofill',
+    description: 'Chrome extension that auto-fills job application forms in one click',
+    problem: 'Applying to jobs is repetitive — every portal has different form layouts, and candidates waste hours typing the same details across LinkedIn, Lever, Greenhouse, and Workday',
+    solution: 'A Manifest V3 Chrome extension with scoring-based field matching, framework-compatible injection (React/Angular/Vue/Shadow DOM), multi-profile support, and a floating overlay for per-field control',
+    techStack: ['Chrome Extension', 'Manifest V3', 'JavaScript', 'MutationObserver', 'Shadow DOM'],
+    contribution: 'Built the entire extension — field scanner, scoring engine, autofill engine, overlay UI, and extraction mode',
+    impact: 'One-click form filling across all major job portals with smart field detection that handles even non-standard SPA forms',
+    githubUrl: 'https://github.com/rish2abh/Smart-Job-Autofill',
+    featured: false,
+  },
+];

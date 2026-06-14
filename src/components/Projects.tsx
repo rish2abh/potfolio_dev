@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { projects, personalProjects } from '@/data/projects';
+import { projects, personalProjects, pluginProjects } from '@/data/projects';
 import { projectArchitectures } from '@/data/architectures';
 import ProjectCard from '@/components/ui/ProjectCard';
 import SectionWrapper from '@/components/SectionWrapper';
@@ -66,6 +66,27 @@ export default function Projects() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {personalProjects.map((project) => (
+                <div key={project.id}>
+                  <ProjectCard
+                    project={project}
+                    isFeatured={false}
+                    hasArchitecture={!!projectArchitectures[project.id]}
+                    onExploreSystem={() => handleExploreSystem(project)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Plugins Section */}
+        {pluginProjects.length > 0 && (
+          <div className="mt-20">
+            <h3 className="text-2xl md:text-3xl font-bold text-center mb-10 bg-gradient-to-r from-emerald-400 to-neon-blue bg-clip-text text-transparent">
+              Plugins &amp; Extensions
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {pluginProjects.map((project) => (
                 <div key={project.id}>
                   <ProjectCard
                     project={project}

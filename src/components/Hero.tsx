@@ -21,7 +21,7 @@ export default function Hero() {
           className="flex-1 text-center md:text-left order-2 md:order-1 w-full md:w-1/2 lg:w-[55%]"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 1, ease: 'easeOut' }}
         >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-[-0.03em] text-white mb-2 leading-[1.1]">
             Rishabh Shrivastava
@@ -117,7 +117,7 @@ export default function Hero() {
           className="order-1 md:order-2 flex-shrink-0 flex items-center justify-center w-full md:w-1/2 lg:w-[45%]"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
+          transition={{ duration: 1.5, ease: 'easeOut', delay: 0.4 }}
         >
           <SystemVisualization
             performanceTier={performanceTier}
