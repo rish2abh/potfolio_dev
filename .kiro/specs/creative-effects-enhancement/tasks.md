@@ -221,11 +221,11 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Ensure fallback to grid layout if TechGraph fails to load
     - _Requirements: 4.1, 14.2_
 
-- [-] 8. Checkpoint — Secondary enhancers
+- [ ] 8. Checkpoint — Secondary enhancers
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Support Effects — Context Cursor and Magnetic Elements
-  - [-] 9.1 Implement ContextCursor component
+  - [ ] 9.1 Implement ContextCursor component
     - Create `src/components/effects/ContextCursor.tsx`
     - Inner dot (8px) + outer ring (32px) following cursor with 80-120ms spring delay
     - Only renders on `@media (pointer: fine)` devices
@@ -236,7 +236,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Dynamic import with `ssr: false`
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.7, 6.8, 11.2, 10.4_
 
-  - [-] 9.2 Implement MagneticWrapper component
+  - [ ] 9.2 Implement MagneticWrapper component
     - Create `src/components/effects/MagneticWrapper.tsx`
     - Calculates distance from cursor to element center using `calculateMagneticTranslation`
     - Applies CSS transform translate (max 8px) when cursor within 60px radius
@@ -246,7 +246,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - _Requirements: 6.5, 6.6, 6.7, 11.2_
 
 - [ ] 10. Support Effects — Atmosphere (Aurora, Enhanced Particles, Grain)
-  - [-] 10.1 Implement AuroraBackground component
+  - [ ] 10.1 Implement AuroraBackground component
     - Create `src/components/effects/AuroraBackground.tsx`
     - Render animated gradient blobs using CSS (3+ color stops, neon-blue/purple, opacity 0.03-0.08)
     - CSS blur 40-80px, cycling positions over 15-30 seconds
@@ -255,7 +255,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Dynamic import with `ssr: false`
     - _Requirements: 7.1, 7.4, 11.1, 10.4_
 
-  - [-] 10.2 Enhance ParticleSystem with connecting lines and mouse interaction
+  - [ ] 10.2 Enhance ParticleSystem with connecting lines and mouse interaction
     - Refactor existing `ParticleBackground.tsx` → move to `src/components/effects/ParticleSystem.tsx`
     - Add connecting lines between particles within 120px (using `shouldDrawLine`)
     - Add mouse repulsion within 150px (using `calculateRepulsion`)
@@ -265,7 +265,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Pause when tab hidden (`visibilitychange` event)
     - _Requirements: 7.2, 7.5, 7.4, 1.7, 10.7, 11.1_
 
-  - [-] 10.3 Implement NoiseTexture component
+  - [ ] 10.3 Implement NoiseTexture component
     - Create `src/components/effects/NoiseTexture.tsx`
     - Full-viewport fixed overlay with SVG noise filter at opacity 0.02-0.05
     - Must add < 10KB to payload
@@ -274,7 +274,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - _Requirements: 7.3, 7.4, 11.1_
 
 - [ ] 11. Support Effects — Animated Borders and Card Effects
-  - [~] 11.1 Implement AnimatedBorder component
+  - [ ] 11.1 Implement AnimatedBorder component
     - Create `src/components/effects/AnimatedBorder.tsx`
     - SVG `<rect>` with animated `stroke-dashoffset` flowing gradient (neon-blue → neon-purple)
     - 3-6 second cycle; hover: 2x speed
@@ -282,7 +282,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Reduced motion: static gradient border
     - _Requirements: 9.1, 9.4, 9.6_
 
-  - [~] 11.2 Implement TiltCard component
+  - [ ] 11.2 Implement TiltCard component
     - Create `src/components/effects/TiltCard.tsx`
     - Rotates card on X/Y axes proportional to pointer offset (using `calculateTilt`)
     - Max 12 degrees rotation, perspective 800-1200px
@@ -293,7 +293,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - _Requirements: 9.2, 9.3, 9.5, 9.6, 11.2_
 
 - [ ] 12. Support Effects — AI Assistant
-  - [~] 12.1 Implement AIAssistant component
+  - [ ] 12.1 Implement AIAssistant component
     - Create `src/components/effects/AIAssistant.tsx`
     - Floating button (non-overlapping with log panel) expands to chat panel
     - Rule-based keyword matching using `chatPatterns.ts` data
@@ -315,11 +315,11 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Test that random non-matching strings return the designated fallback message
     - **Validates: Requirements 5.6**
 
-- [~] 13. Checkpoint — Support effects
+- [ ] 13. Checkpoint — Support effects
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 14. Cross-cutting — Section Transitions, Quick View, Brand, and Impact
-  - [~] 14.1 Implement StaggeredList component for entrance animations
+  - [ ] 14.1 Implement StaggeredList component for entrance animations
     - Create `src/components/effects/StaggeredList.tsx`
     - Wraps groups of child elements with staggered fade-up-scale or slide-in
     - Uses `calculateStaggerDelays` to respect max 1200ms total duration
@@ -329,13 +329,13 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Apply to project cards, skill nodes, experience entries, section headings
     - _Requirements: 8.1, 8.2, 8.4, 8.5, 8.6, 11.3_
 
-  - [~] 14.2 Implement smooth scroll and anchor navigation
+  - [ ] 14.2 Implement smooth scroll and anchor navigation
     - Add smooth-scroll behavior with ease-out timing using `calculateScrollDuration`
     - Duration proportional to distance (300-800ms)
     - Wire to navigation links and CTA buttons
     - _Requirements: 8.3_
 
-  - [~] 14.3 Implement QuickViewMode component and toggle
+  - [ ] 14.3 Implement QuickViewMode component and toggle
     - Create `src/components/QuickViewMode.tsx` — clean single-scroll summary page
     - Display: years of experience, role, top 8 tech tags, project name + one-line impact, contact CTA
     - Direct links to resume PDF, GitHub, LinkedIn, contact section
@@ -357,7 +357,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Test that for any project with N≥2 metrics, selector returns exactly 1
     - **Validates: Requirements 15.7**
 
-  - [~] 14.6 Add impact metrics to project cards and experience entries
+  - [ ] 14.6 Add impact metrics to project cards and experience entries
     - Extend Project type with `impactMetrics: ImpactMetric[]` field
     - Add impact data to projects in `projects.ts` (VoiceOwl: 4 metrics, AgriSoft: 2, Digisparsh: 2)
     - Render impact section in ProjectCard and ProjectSystemView with visual emphasis (larger font, neon accent)
@@ -369,7 +369,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Test that every project has impactMetrics array with ≥ 2 entries, each with non-empty label and value
     - **Validates: Requirements 15.1**
 
-  - [~] 14.8 Add brand voice copy updates
+  - [ ] 14.8 Add brand voice copy updates
     - Add positioning statement to Hero section below role text
     - Add philosophy statement to About section
     - Update section headings to engineering-flavored language ("Systems I've Built", "The Stack", "Engineering Timeline")
@@ -377,7 +377,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
 - [ ] 15. Performance, Accessibility, and Fallbacks
-  - [~] 15.1 Implement performance safeguards and background tab pausing
+  - [ ] 15.1 Implement performance safeguards and background tab pausing
     - Wire `usePerformanceMonitor` into atmosphere components
     - Add `visibilitychange` listener to pause all rAF animations when tab hidden
     - Ensure all effects use GPU-accelerated properties only (transform, opacity, filter)
@@ -389,7 +389,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Test that below-threshold FPS for specified duration triggers degradation, above threshold does not
     - **Validates: Requirements 7.5, 14.3**
 
-  - [~] 15.3 Implement fail-safe static fallback mode
+  - [ ] 15.3 Implement fail-safe static fallback mode
     - Wrap each effect component in React Error Boundary that renders nothing on failure
     - Ensure SSR renders all critical content without client JS (verify via HTML output)
     - Add subtle "Viewing simplified mode" indicator when effects are disabled
@@ -397,7 +397,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - Progressive enhancement: content renders first, effects hydrate on top
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6_
 
-  - [~] 15.4 Verify accessibility and reduced-motion compliance
+  - [ ] 15.4 Verify accessibility and reduced-motion compliance
     - Ensure all `prefers-reduced-motion: reduce` behaviors are correctly wired via EffectsContext
     - Add `aria-hidden="true"` to all decorative effect elements
     - Verify AI assistant focus management (focus into panel on open, return to trigger on close)
@@ -405,7 +405,7 @@ Transform the portfolio into a "live AI system dashboard" experience using progr
     - All effects decorative only — no information lost when disabled
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5, 11.6_
 
-- [~] 16. Final checkpoint — Full integration verification
+- [ ] 16. Final checkpoint — Full integration verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

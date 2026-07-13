@@ -64,19 +64,19 @@ export default function SectionWrapper({
           observer.disconnect();
         }
       },
-      { threshold: 0.05, rootMargin: '0px 0px -50px 0px' }
+      { threshold: 0, rootMargin: '100px 0px 0px 0px' }
     );
 
     observer.observe(el);
 
-    // Safety fallback: if section never becomes visible within 5s, show it anyway
+    // Safety fallback: if section never becomes visible within 2s, show it anyway
     const fallbackTimer = setTimeout(() => {
       if (!hasFiredRef.current) {
         hasFiredRef.current = true;
         setIsTriggered(true);
         observer.disconnect();
       }
-    }, 5000);
+    }, 2000);
 
     return () => {
       observer.disconnect();

@@ -110,7 +110,7 @@ export default function ProjectCard({
   if (isFeatured) {
     return (
       <div
-        style={{ perspective: '1000px' }}
+        style={isFinePointer ? { perspective: '1000px' } : undefined}
         className="md:col-span-2"
         onMouseEnter={handleCardMouseEnter}
         onMouseLeave={handleCardMouseLeave}
@@ -128,9 +128,9 @@ export default function ProjectCard({
             flex flex-col justify-between
           "
           style={{
-            transformStyle: 'preserve-3d',
+            transformStyle: isFinePointer ? 'preserve-3d' : 'flat',
             transition: 'transform 200ms ease-out',
-            transform: `rotateX(${tilt.tiltX}deg) rotateY(${tilt.tiltY}deg)`,
+            transform: tiltEnabled ? `rotateX(${tilt.tiltX}deg) rotateY(${tilt.tiltY}deg)` : 'none',
           }}
           whileHover={{
             scale: 1.01,
@@ -258,7 +258,7 @@ export default function ProjectCard({
   // Standard (non-featured) card
   return (
     <div
-      style={{ perspective: '1000px' }}
+      style={isFinePointer ? { perspective: '1000px' } : undefined}
       onMouseEnter={handleCardMouseEnter}
       onMouseLeave={handleCardMouseLeave}
       ref={cardRef}
@@ -273,9 +273,9 @@ export default function ProjectCard({
           border border-white/10
         "
         style={{
-          transformStyle: 'preserve-3d',
+          transformStyle: isFinePointer ? 'preserve-3d' : 'flat',
           transition: 'transform 200ms ease-out',
-          transform: `rotateX(${tilt.tiltX}deg) rotateY(${tilt.tiltY}deg)`,
+          transform: tiltEnabled ? `rotateX(${tilt.tiltX}deg) rotateY(${tilt.tiltY}deg)` : 'none',
         }}
         whileHover={{
           scale: 1.03,
