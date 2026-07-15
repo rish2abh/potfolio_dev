@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Project } from '@/types';
-import { ProjectArchitecture, ArchNode } from '@/types/effects';
+import { ProjectArchitecture } from '@/types/effects';
 import { fluctuateLatency } from '@/lib/layout-utils';
 import { useEffects } from '@/contexts/EffectsContext';
 import { useLog } from '@/contexts/LogContext';
@@ -208,15 +208,6 @@ export interface ArchitecturePanelProps {
   heavyAnimationsEnabled: boolean;
   exploreData: ProjectExploreData;
 }
-
-// Color map for node types
-const NODE_COLOR_MAP: Record<ArchNode['type'], string> = {
-  user: '#3b82f6',
-  backend: '#22c55e',
-  ai: '#a855f7',
-  database: '#f59e0b',
-  external: '#6b7280',
-};
 
 // ─── HLD (High-Level Design) Diagram ────────────────────────────────────────────
 
