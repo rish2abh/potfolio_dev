@@ -256,19 +256,19 @@ function ArchitecturePanel({ architecture, heavyAnimationsEnabled, exploreData }
     : null;
 
   // Node dimensions in viewBox units
-  const nodeWidth = 16;
+  const nodeWidth = 24;
   const nodeHeight = 10;
 
   return (
     <div className="space-y-4">
       {/* SVG Node Graph */}
-      <div className="relative bg-white/5 border border-white/10 rounded-xl p-4 overflow-x-auto">
+      <div className="relative bg-white/5 border border-white/10 rounded-xl p-4 overflow-auto">
         <svg
           ref={svgRef}
-          viewBox="0 0 100 80"
+          viewBox="0 0 200 135"
           width="100%"
-          height="auto"
-          className="min-w-[500px]"
+          className="max-h-[60vh] w-full"
+          preserveAspectRatio="xMidYMid meet"
           role="img"
           aria-label="System architecture node graph"
         >

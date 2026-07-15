@@ -37,7 +37,7 @@ export const chatPatterns: QuestionPattern[] = [
   {
     patterns: [/node/i, /backend/i, /server/i],
     response:
-      "Node.js is my primary runtime — 3+ years building production backends with Express and NestJS. I focus on real-time systems (SSE), microservices, and AI pipeline integration. Currently powering systems handling 2M+ daily API requests.",
+      "Node.js is my primary runtime — 4 years building production backends with Express and NestJS. I focus on real-time systems (SSE), microservices, and AI pipeline integration. Currently powering systems handling 2M+ daily API requests.",
     category: 'skills',
   },
 

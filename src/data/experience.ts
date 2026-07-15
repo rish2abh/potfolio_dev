@@ -33,7 +33,7 @@ export const experience: Experience[] = [
     id: 'codesid',
     company: 'Codesid',
     role: 'Backend Developer',
-    startDate: 'Dec 2022',
+    startDate: 'May 2022',
     endDate: 'Jan 2023',
     description: 'Built foundational backend services and APIs for web applications, gaining hands-on experience with Node.js ecosystem',
     contributions: [

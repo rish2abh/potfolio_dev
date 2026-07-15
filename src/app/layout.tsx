@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Rishabh Shrivastava | Backend Developer & AI Systems Engineer",
     description:
-      "Backend Developer and AI Systems Engineer with 3+ years building scalable Node.js systems and AI-driven platforms.",
+      "Backend Developer and AI Systems Engineer with 4 years building scalable Node.js systems and AI-driven platforms.",
     url: "https://rishabh.dev",
     images: ["/images/profile.webp"],
     type: "website",

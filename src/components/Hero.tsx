@@ -33,7 +33,7 @@ export default function Hero() {
             </span>
           </h3>
           <p className="text-lg md:text-xl text-white/60 max-w-lg mb-6 mx-auto md:mx-0">
-            3+ years building real-time AI systems, high-throughput APIs, and infrastructure that handles millions of requests without flinching.
+            4 years building real-time AI systems, high-throughput APIs, and infrastructure that handles millions of requests without flinching.
           </p>
 
           {/* Impact highlights */}
