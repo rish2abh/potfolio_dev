@@ -218,283 +218,152 @@ const NODE_COLOR_MAP: Record<ArchNode['type'], string> = {
   external: '#6b7280',
 };
 
-function ArchitecturePanel({ architecture, heavyAnimationsEnabled, exploreData }: ArchitecturePanelProps) {
-  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
+// ─── HLD (High-Level Design) Diagram ────────────────────────────────────────────
 
-  const { nodes, edges } = architecture;
+/** A single block in the HLD diagram */
+function HLDBlock({ label, techs, color, isSmall }: {
+  label: string;
+  techs: string[];
+  color: string;
+  isSmall?: boolean;
+}) {
+  return (
+    <div
+      className={`rounded-lg border bg-[#0f172a]/90 backdrop-blur-sm text-center ${
+        isSmall ? 'px-2 py-2' : 'px-3 py-3'
+      }`}
+      style={{ borderColor: `${color}50` }}
+    >
+      <p className={`text-white font-semibold ${isSmall ? 'text-[10px]' : 'text-xs'}`}>{label}</p>
+      <p className="text-white/40 text-[9px] mt-0.5 font-mono">{techs.join(' · ')}</p>
+    </div>
+  );
+}
 
-  const handleNodeClick = (nodeId: string) => {
-    setSelectedNodeId((prev) => (prev === nodeId ? null : nodeId));
-  };
+/** Vertical arrow connector */
+function DownArrow({ label }: { label?: string }) {
+  return (
+    <div className="flex flex-col items-center py-1">
+      <div className="w-px h-4 bg-white/20" />
+      {label && <span className="text-[8px] text-white/30 font-mono my-0.5">{label}</span>}
+      <svg width="8" height="5" viewBox="0 0 8 5" className="text-white/30">
+        <path d="M0 0 L4 5 L8 0" fill="currentColor" />
+      </svg>
+    </div>
+  );
+}
 
-  const handleNodeMouseEnter = (nodeId: string, event: React.MouseEvent) => {
-    setHoveredNodeId(nodeId);
-    // Calculate tooltip position relative to the SVG container
-    if (svgRef.current) {
-      const rect = svgRef.current.getBoundingClientRect();
-      setTooltipPos({
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top - 10,
-      });
-    }
-  };
+/** Horizontal connector with branching */
+function BranchConnector() {
+  return (
+    <div className="flex items-center justify-center py-1">
+      <div className="flex items-center w-full max-w-md">
+        <div className="flex-1 h-px bg-white/15" />
+        <div className="w-px h-3 bg-white/15" />
+        <div className="flex-1 h-px bg-white/15" />
+        <div className="w-px h-3 bg-white/15" />
+        <div className="flex-1 h-px bg-white/15" />
+      </div>
+    </div>
+  );
+}
 
-  const handleNodeMouseLeave = () => {
-    setHoveredNodeId(null);
-    setTooltipPos(null);
-  };
-
-  const selectedNode = selectedNodeId
-    ? nodes.find((n) => n.id === selectedNodeId) ?? null
-    : null;
-
-  const hoveredNode = hoveredNodeId
-    ? nodes.find((n) => n.id === hoveredNodeId) ?? null
-    : null;
-
-  // Node dimensions in viewBox units
-  const nodeWidth = 24;
-  const nodeHeight = 10;
-
+function ArchitecturePanel({ architecture, exploreData }: ArchitecturePanelProps) {
   return (
     <div className="space-y-4">
-      {/* SVG Node Graph */}
-      <div className="relative bg-white/5 border border-white/10 rounded-xl p-4 overflow-auto">
-        <svg
-          ref={svgRef}
-          viewBox="0 0 200 135"
-          width="100%"
-          className="max-h-[60vh] w-full"
-          preserveAspectRatio="xMidYMid meet"
-          role="img"
-          aria-label="System architecture node graph"
-        >
-          {/* CSS keyframes for animated edge data flow */}
-          <style>
-            {`
-              @keyframes dashFlow {
-                from { stroke-dashoffset: 20; }
-                to { stroke-dashoffset: 0; }
-              }
-            `}
-          </style>
+      {/* HLD Diagram */}
+      <div className="bg-white/[0.03] border border-white/10 rounded-xl p-4 md:p-6 overflow-x-auto">
+        <h4 className="text-white/40 text-[10px] uppercase tracking-wider font-mono mb-5 text-center">
+          High-Level Design — VoiceOwl AI Platform
+        </h4>
 
-          {/* SVG Filters for glow effects */}
-          <defs>
-            {Object.entries(NODE_COLOR_MAP).map(([type, color]) => (
-              <filter key={type} id={`glow-${type}`} x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="1.5" result="blur" />
-                <feFlood floodColor={color} floodOpacity="0.4" result="color" />
-                <feComposite in="color" in2="blur" operator="in" result="glow" />
-                <feMerge>
-                  <feMergeNode in="glow" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            ))}
-            {/* Enhanced glow for hovered node */}
-            {Object.entries(NODE_COLOR_MAP).map(([type, color]) => (
-              <filter key={`${type}-hover`} id={`glow-${type}-hover`} x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="2.5" result="blur" />
-                <feFlood floodColor={color} floodOpacity="0.7" result="color" />
-                <feComposite in="color" in2="blur" operator="in" result="glow" />
-                <feMerge>
-                  <feMergeNode in="glow" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            ))}
-          </defs>
-
-          {/* Render Edges as animated paths */}
-          {edges.map((edge) => {
-            const fromNode = nodes.find((n) => n.id === edge.from);
-            const toNode = nodes.find((n) => n.id === edge.to);
-            if (!fromNode || !toNode) return null;
-
-            const x1 = fromNode.position.x + nodeWidth / 2;
-            const y1 = fromNode.position.y + nodeHeight / 2;
-            const x2 = toNode.position.x + nodeWidth / 2;
-            const y2 = toNode.position.y + nodeHeight / 2;
-            const midX = (x1 + x2) / 2;
-            const midY = (y1 + y2) / 2;
-            const pathD = `M ${x1},${y1} L ${x2},${y2}`;
-
-            return (
-              <g key={`${edge.from}-${edge.to}`}>
-                <path
-                  d={pathD}
-                  stroke="rgba(255,255,255,0.15)"
-                  strokeWidth="0.3"
-                  strokeLinecap="round"
-                  fill="none"
-                  strokeDasharray={heavyAnimationsEnabled ? '4 2' : undefined}
-                  style={
-                    heavyAnimationsEnabled
-                      ? { animation: 'dashFlow 1.5s linear infinite' }
-                      : undefined
-                  }
-                />
-                {edge.label && (
-                  <text
-                    x={midX}
-                    y={midY - 1.2}
-                    textAnchor="middle"
-                    fill="rgba(255,255,255,0.4)"
-                    fontSize="2"
-                    fontFamily="monospace"
-                  >
-                    {edge.label}
-                  </text>
-                )}
-              </g>
-            );
-          })}
-
-          {/* Render Nodes */}
-          {nodes.map((node) => {
-            const color = NODE_COLOR_MAP[node.type];
-            const isHovered = hoveredNodeId === node.id;
-            const isSelected = selectedNodeId === node.id;
-            const filter = isHovered
-              ? `url(#glow-${node.type}-hover)`
-              : `url(#glow-${node.type})`;
-            const scale = isHovered && heavyAnimationsEnabled ? 1.05 : 1;
-            const cx = node.position.x + nodeWidth / 2;
-            const cy = node.position.y + nodeHeight / 2;
-
-            return (
-              <g
-                key={node.id}
-                transform={`translate(${node.position.x}, ${node.position.y})`}
-                style={{
-                  transformOrigin: `${cx}px ${cy}px`,
-                  transform: `scale(${scale})`,
-                  transition: heavyAnimationsEnabled ? 'transform 0.2s ease' : 'none',
-                  cursor: 'pointer',
-                }}
-                filter={filter}
-                onMouseEnter={(e) => handleNodeMouseEnter(node.id, e)}
-                onMouseLeave={handleNodeMouseLeave}
-                onClick={() => handleNodeClick(node.id)}
-                role="button"
-                aria-label={`${node.label} node - ${node.role}`}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleNodeClick(node.id);
-                  }
-                }}
-              >
-                {/* Node rect */}
-                <rect
-                  x={0}
-                  y={0}
-                  width={nodeWidth}
-                  height={nodeHeight}
-                  rx={1.5}
-                  ry={1.5}
-                  fill="rgba(15, 23, 42, 0.9)"
-                  stroke={color}
-                  strokeWidth={isSelected ? 0.6 : 0.4}
-                  opacity={isHovered ? 1 : 0.9}
-                />
-                {/* Node label */}
-                <text
-                  x={nodeWidth / 2}
-                  y={3.8}
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="2.2"
-                  fontWeight="600"
-                  fontFamily="system-ui, sans-serif"
-                >
-                  {node.label}
-                </text>
-                {/* Technology pills */}
-                {node.technologies.slice(0, 2).map((tech, i) => (
-                  <text
-                    key={tech}
-                    x={nodeWidth / 2}
-                    y={6.2 + i * 2}
-                    textAnchor="middle"
-                    fill={color}
-                    fontSize="1.6"
-                    fontFamily="monospace"
-                    opacity={0.8}
-                  >
-                    {tech}
-                  </text>
-                ))}
-              </g>
-            );
-          })}
-        </svg>
-
-        {/* Tooltip (HTML positioned over SVG) */}
-        {hoveredNode && tooltipPos && (
-          <div
-            className="absolute pointer-events-none bg-gray-900/95 border border-white/20 rounded-lg px-3 py-2 text-xs text-white/90 max-w-[200px] z-20 shadow-lg"
-            style={{
-              left: tooltipPos.x,
-              top: tooltipPos.y,
-              transform: 'translate(-50%, -100%)',
-            }}
-          >
-            <p className="font-semibold">{hoveredNode.label}</p>
-            <p className="text-white/60 mt-0.5">{hoveredNode.role}</p>
+        <div className="min-w-[320px] max-w-2xl mx-auto">
+          {/* Layer 1: Frontend */}
+          <div className="flex justify-center">
+            <HLDBlock label="Frontend (React)" techs={['Admin', 'Dashboard UI']} color="#3b82f6" />
           </div>
-        )}
-      </div>
+          <DownArrow label="HTTPS" />
 
-      {/* Selected Node Info Card */}
-      <AnimatePresence>
-        {selectedNode && (
-          <motion.div
-            key={selectedNode.id}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="overflow-hidden"
-          >
-            <div
-              className="p-5 bg-white/5 border rounded-xl"
-              style={{ borderColor: `${NODE_COLOR_MAP[selectedNode.type]}40` }}
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: NODE_COLOR_MAP[selectedNode.type] }}
-                />
-                <h4 className="text-white font-semibold text-sm">{selectedNode.label}</h4>
-                <span className="text-xs text-white/40 font-mono uppercase">{selectedNode.type}</span>
+          {/* Layer 2: Nginx */}
+          <div className="flex justify-center">
+            <HLDBlock label="Nginx (LB + Gateway)" techs={['Load Balancer', 'Routing']} color="#6b7280" />
+          </div>
+          <DownArrow label="Proxy" />
+
+          {/* Layer 3: Backend */}
+          <div className="flex justify-center">
+            <HLDBlock label="Backend Services (Node.js)" techs={['NestJS', 'Express']} color="#22c55e" />
+          </div>
+
+          {/* Branch to 3 services */}
+          <BranchConnector />
+          <div className="grid grid-cols-3 gap-2">
+            <HLDBlock label="Auth Service" techs={['JWT', 'RBAC', 'MFA']} color="#22c55e" isSmall />
+            <HLDBlock label="Campaign Mgmt" techs={['Scheduling']} color="#22c55e" isSmall />
+            <HLDBlock label="Agent Engine" techs={['Workflows']} color="#a855f7" isSmall />
+          </div>
+
+          {/* Down to data stores */}
+          <div className="flex items-center justify-center py-1">
+            <div className="flex items-center w-full">
+              <div className="flex-1 flex flex-col items-center">
+                <svg width="8" height="5" viewBox="0 0 8 5" className="text-white/30"><path d="M0 0 L4 5 L8 0" fill="currentColor" /></svg>
               </div>
-              <p className="text-white/70 text-sm mb-3">{selectedNode.role}</p>
-              <div className="flex flex-wrap gap-2">
-                {selectedNode.technologies.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-2.5 py-1 text-xs font-medium rounded-full border"
-                    style={{
-                      borderColor: `${NODE_COLOR_MAP[selectedNode.type]}30`,
-                      color: NODE_COLOR_MAP[selectedNode.type],
-                      backgroundColor: `${NODE_COLOR_MAP[selectedNode.type]}10`,
-                    }}
-                  >
-                    {tech}
-                  </span>
-                ))}
+              <div className="flex-1 flex flex-col items-center">
+                <svg width="8" height="5" viewBox="0 0 8 5" className="text-white/30"><path d="M0 0 L4 5 L8 0" fill="currentColor" /></svg>
+              </div>
+              <div className="flex-1 flex flex-col items-center">
+                <svg width="8" height="5" viewBox="0 0 8 5" className="text-white/30"><path d="M0 0 L4 5 L8 0" fill="currentColor" /></svg>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
 
+          {/* Layer 5: Data Stores */}
+          <div className="grid grid-cols-3 gap-2">
+            <HLDBlock label="MongoDB" techs={['Primary DB']} color="#f59e0b" isSmall />
+            <HLDBlock label="PostgreSQL" techs={['Relational']} color="#f59e0b" isSmall />
+            <HLDBlock label="Redis" techs={['Cache', 'Queue']} color="#f59e0b" isSmall />
+          </div>
+          <DownArrow label="Events" />
+
+          {/* Layer 6: Queue */}
+          <div className="flex justify-center">
+            <HLDBlock label="AWS SQS (Async Queue)" techs={['Job Processing']} color="#6b7280" />
+          </div>
+
+          {/* Branch to processing services */}
+          <BranchConnector />
+          <div className="grid grid-cols-3 gap-2">
+            <HLDBlock label="PCA Service" techs={['Post-Call Analytics']} color="#a855f7" isSmall />
+            <HLDBlock label="Notifications" techs={['Email', 'SMS']} color="#22c55e" isSmall />
+            <HLDBlock label="File Processing" techs={['Upload', 'Parse']} color="#22c55e" isSmall />
+          </div>
+          <DownArrow label="Inference" />
+
+          {/* Layer 8: AI */}
+          <div className="flex justify-center">
+            <HLDBlock label="AI Layer" techs={['OpenAI', 'Gemini', 'Groq']} color="#a855f7" />
+          </div>
+          <DownArrow label="TTS / STT" />
+
+          {/* Layer 9: Voice */}
+          <div className="flex justify-center">
+            <HLDBlock label="Voice / Telephony" techs={['Azure STT', 'Twilio', 'ElevenLabs']} color="#6b7280" />
+          </div>
+          <DownArrow label="Events" />
+
+          {/* Layer 10: Observability */}
+          <div className="flex justify-center">
+            <HLDBlock label="Real-time & Observability" techs={['SSE', 'DataDog']} color="#6b7280" />
+          </div>
+          <DownArrow label="Logs" />
+
+          {/* Layer 11: Cloud */}
+          <div className="flex justify-center">
+            <HLDBlock label="Cloud & Infra (AWS)" techs={['S3', 'Lambda', 'Docker', 'CI/CD']} color="#6b7280" />
+          </div>
+        </div>
+      </div>
       {/* Backend Architecture Layers Section */}
       <motion.div
         className="space-y-3"
